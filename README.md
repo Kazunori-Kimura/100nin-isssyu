@@ -1,36 +1,257 @@
-This is a [Next.js](https://nextjs.org) project bootstrapped with [`create-next-app`](https://nextjs.org/docs/app/api-reference/cli/create-next-app).
+# 百人一首学習アプリ
 
-## Getting Started
+百人一首を楽しく学習できるクイズアプリケーションです。上の句から下の句を選択する4択クイズで、百人一首の知識を身につけることができます。
 
-First, run the development server:
+![百人一首クイズ](https://img.shields.io/badge/百人一首-クイズアプリ-blue)
+![Next.js](https://img.shields.io/badge/Next.js-16.0.3-black)
+![TypeScript](https://img.shields.io/badge/TypeScript-5-blue)
+![Tailwind CSS](https://img.shields.io/badge/Tailwind%20CSS-4-06B6D4)
 
-```bash
-npm run dev
-# or
-yarn dev
-# or
-pnpm dev
-# or
-bun dev
+## 📱 アプリ概要
+
+### 目的
+百人一首の暗記と理解を促進するインタラクティブな学習ツール
+
+### ターゲット
+- 百人一首を学習したい学生
+- 古典文学に興味のある方
+- 日本の伝統文化を学びたい方
+
+### 主な特徴
+- ✨ 直感的で使いやすいクイズインターフェース
+- 📱 モバイルファーストのレスポンシブデザイン
+- 📊 学習進捗の可視化
+- ⚙️ カスタマイズ可能な出題範囲
+- 🎉 正答時のフィードバックアニメーション
+- 💾 ローカルストレージによる設定保存
+
+## 🎯 実装済み機能
+
+### 1. クイズ機能
+- **10問クイズセット**: 1回のセッションで10問を出題
+- **4択問題**: 上の句を表示し、4つの下の句から正解を選択
+- **ランダム出題**: 選択された範囲から毎回異なる組み合わせで出題
+- **即時フィードバック**: 正答/誤答の表示とアニメーション
+- **自動進行**: 正答後2秒で自動的に次の問題へ遷移
+
+### 2. 結果表示機能
+- **結果サマリー**: 10問の正答数と正答率を表示
+- **詳細レビュー**: 各問題の正誤、正解、選択した回答を一覧表示
+- **評価メッセージ**: 正答率に応じた励ましのメッセージ
+- **歌詞全文表示**: 問題に使用された歌の完全な情報を表示
+
+### 3. 設定機能
+- **出題範囲選択**: 1-100番の任意の範囲を指定可能
+- **バリデーション**: 適切な範囲設定の検証機能
+- **デフォルト設定**: 100首全てを出題対象に設定
+- **設定保存**: ローカルストレージで設定を永続化
+
+### 4. UI/UX機能
+- **正答アニメーション**: 正解時の視覚的フィードバック
+- **進捗表示**: 現在の問題番号（例: 3/10）
+- **レスポンシブデザイン**: スマートフォン、タブレット、デスクトップ対応
+- **直感的ナビゲーション**: 明確な画面遷移とボタン配置
+
+## 🖼️ 画面構成
+
+### スタート画面（`/`）
+- アプリタイトル「百人一首クイズ」
+- サブタイトル「古典の美しさを学ぼう」
+- 「クイズを始める」ボタン（大きくて目立つ）
+- 「出題範囲を設定」ボタン
+- 現在の設定表示（例: "出題範囲: 1-100番 (100首)"）
+
+### クイズ画面（`/quiz`）
+- ヘッダー: 進捗表示（例: "問題 3 / 10"）
+- 問題エリア: 上の句表示（大きなフォント、読みやすく）
+- 選択肢エリア: 4つの下の句ボタン（A、B、C、D）
+- 正答アニメーション: 緑色のチェックマークとバウンス効果
+- フッター: 「中断」ボタン
+
+### 設定画面（`/settings`）
+- ページタイトル「出題範囲設定」
+- 開始番号入力フィールド（1-100）
+- 終了番号入力フィールド（開始番号-100）
+- 選択された範囲のプレビュー表示
+- バリデーションエラー表示
+- 「設定を保存」「デフォルトに戻す」「戻る」ボタン
+
+### 結果画面（`/results`）
+- 結果サマリー: 正答数/総問題数、正答率、評価メッセージ
+- 詳細リスト: 各問題の正誤、上の句、正解、選択回答、歌人名
+- アクション: 「もう一度挑戦」「設定を変更」「スタートに戻る」ボタン
+
+## 🛠️ 技術仕様
+
+### 技術スタック
+- **フレームワーク**: Next.js 16 with App Router
+- **言語**: TypeScript 5
+- **スタイリング**: Tailwind CSS 4
+- **状態管理**: React Hooks（useState, useEffect, カスタムフック）
+- **データストレージ**: ローカルストレージ（設定保存）
+
+### プロジェクト構造
+```
+src/
+├── app/
+│   ├── layout.tsx          # ルートレイアウト
+│   ├── page.tsx           # スタート画面
+│   ├── quiz/
+│   │   └── page.tsx       # クイズ画面
+│   ├── settings/
+│   │   └── page.tsx       # 設定画面
+│   └── results/
+│       └── page.tsx       # 結果画面
+├── components/
+│   ├── ui/
+│   │   ├── Button.tsx     # 共通ボタンコンポーネント
+│   │   ├── Card.tsx       # カードコンポーネント
+│   │   └── Input.tsx      # 入力フィールド
+│   ├── QuizCard.tsx       # クイズ問題表示
+│   ├── ProgressBar.tsx    # 進捗バー
+│   └── ScoreDisplay.tsx   # スコア表示
+├── hooks/
+│   ├── useQuiz.ts         # クイズロジック
+│   ├── useSettings.ts     # 設定管理
+│   └── useLocalStorage.ts # ローカルストレージ操作
+├── utils/
+│   ├── quizGenerator.ts   # クイズ生成ロジック
+│   ├── shuffleArray.ts    # 配列シャッフル
+│   └── constants.ts       # アプリ定数
+├── data/
+│   └── poem.json         # 百人一首データ（100首）
+└── types/
+    ├── poem.ts           # 歌データ型定義
+    └── quiz.ts           # クイズ関連型定義
 ```
 
-Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
+### データ構造
 
-You can start editing the page by modifying `app/page.tsx`. The page auto-updates as you edit the file.
+#### PoemInfo型（src/types/poem.ts）
+```typescript
+interface PoemInfo {
+    id: number;           // 歌番号（1-100）
+    poem: string;         // 完全な歌詞
+    poet: string;         // 歌人名
+    poet_kana: string;    // 歌人名（ひらがな）
+    above: string;        // 上の句（ひらがな）
+    below: string;        // 下の句（ひらがな）
+}
+```
 
-This project uses [`next/font`](https://nextjs.org/docs/app/building-your-application/optimizing/fonts) to automatically optimize and load [Geist](https://vercel.com/font), a new font family for Vercel.
+#### クイズ関連型（src/types/quiz.ts）
+```typescript
+interface QuizQuestion {
+    id: number;
+    above: string;        // 問題として表示する上の句
+    correctAnswer: string; // 正解の下の句
+    choices: string[];    // 4つの選択肢
+    poet: string;         // 歌人名
+    fullPoem: string;     // 完全な歌詞
+}
 
-## Learn More
+interface QuizResult {
+    questionId: number;
+    userAnswer: string;
+    correctAnswer: string;
+    isCorrect: boolean;
+    above: string;
+    poet: string;
+}
+```
 
-To learn more about Next.js, take a look at the following resources:
+## 🎨 デザインシステム
 
-- [Next.js Documentation](https://nextjs.org/docs) - learn about Next.js features and API.
-- [Learn Next.js](https://nextjs.org/learn) - an interactive Next.js tutorial.
+### カラーパレット
+- **プライマリー**: インディゴブルー（#4f46e5）
+- **成功**: エメラルドグリーン（#10b981）
+- **エラー**: レッド（#ef4444）
+- **背景**: ライトグレー（#f8fafc）
 
-You can check out [the Next.js GitHub repository](https://github.com/vercel/next.js) - your feedback and contributions are welcome!
+### レスポンシブブレークポイント
+- スマートフォン: < 640px
+- タブレット: 640px - 1024px  
+- デスクトップ: > 1024px
 
-## Deploy on Vercel
+## 🚀 セットアップ・起動方法
 
-The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
+### 前提条件
+- Node.js 18.x 以上
+- npm または yarn
 
-Check out our [Next.js deployment documentation](https://nextjs.org/docs/app/building-your-application/deploying) for more details.
+### インストール
+```bash
+# リポジトリをクローン
+git clone <repository-url>
+cd 100nin-isssyu
+
+# 依存関係のインストール
+npm install
+
+# 開発サーバー起動
+npm run dev
+```
+
+### アクセス
+ブラウザで http://localhost:3000 にアクセス
+
+## 📋 使用方法
+
+1. **スタート画面**でアプリの概要を確認
+2. **「出題範囲を設定」**で学習したい範囲を選択（オプション）
+3. **「クイズを始める」**をクリックしてクイズ開始
+4. **上の句**を読んで、正しい**下の句**を4択から選択
+5. **10問完了後**、結果画面で成績を確認
+6. **「もう一度挑戦」**で継続学習
+
+## 🎯 学習効果
+
+### 評価システム
+- **90-100%**: "素晴らしい！百人一首マスターですね！"
+- **70-89%**: "とても良くできました！"
+- **50-69%**: "まずまずの成績です。もう少し頑張りましょう！"
+- **0-49%**: "まだまだ伸びしろがあります。継続は力なり！"
+
+### 学習のコツ
+- 出題範囲を段階的に拡大（例: 1-20番 → 1-50番 → 全範囲）
+- 間違えた問題は歌人名も含めて覚える
+- 継続的な学習で記憶を定着させる
+
+## 🔧 開発情報
+
+### ビルド・デプロイ
+```bash
+# 本番ビルド
+npm run build
+
+# 本番サーバー起動
+npm start
+
+# 静的エクスポート
+npm run export
+```
+
+### コード品質
+- TypeScriptによる型安全性
+- ESLintによるコード品質管理
+- Prettierによるコード整形
+
+## 📄 ライセンス
+
+MIT License - 詳細は`LICENSE`ファイルを参照
+
+## 🤝 貢献
+
+1. このリポジトリをフォーク
+2. フィーチャーブランチを作成 (`git checkout -b feature/AmazingFeature`)
+3. 変更をコミット (`git commit -m 'Add some AmazingFeature'`)
+4. ブランチにプッシュ (`git push origin feature/AmazingFeature`)
+5. プルリクエストを作成
+
+## 📞 サポート
+
+質問や提案がありましたら、Issuesページでお気軽にお知らせください。
+
+---
+
+**百人一首の美しさを現代の技術で表現し、学習者に新たな発見の機会を提供する学習アプリです。**

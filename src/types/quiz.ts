@@ -24,11 +24,14 @@ export interface QuizSession {
   isCompleted: boolean;
 }
 
-export type SelectionMode = 'range' | 'individual';
+import { ColorGroup } from './poem';
+
+export type SelectionMode = 'range' | 'individual' | 'color';
 
 export interface AppSettings {
-  mode: SelectionMode;          // 選択モード（範囲選択 or 個別選択）
+  mode: SelectionMode;          // 選択モード（範囲選択 or 個別選択 or 色分け選択）
   startRange: number;           // 出題開始番号（範囲選択時）
   endRange: number;             // 出題終了番号（範囲選択時）
   selectedIds: number[];        // 選択された歌のID配列（個別選択時）
+  selectedColors: ColorGroup[]; // 選択された色グループ配列（色分け選択時）
 }

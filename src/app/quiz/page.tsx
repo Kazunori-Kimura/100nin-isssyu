@@ -14,7 +14,7 @@ const poems: PoemInfo[] = poemData as PoemInfo[];
 
 export default function QuizPage() {
   const router = useRouter();
-  const { settings } = useSettings();
+  const { settings, getSelectedPoemIds } = useSettings();
   const { 
     session, 
     startQuiz, 
@@ -28,7 +28,7 @@ export default function QuizPage() {
     mode: settings.mode,
     startRange: settings.startRange,
     endRange: settings.endRange,
-    selectedIds: settings.selectedIds,
+    selectedIds: getSelectedPoemIds(), // 全てのモードに対応した統一されたID取得
   });
 
   const [isLoading, setIsLoading] = useState(true);
@@ -36,10 +36,13 @@ export default function QuizPage() {
   useEffect(() => {
     // コンポーネントマウント時にクイズを開始
     startQuiz();
+  }, []); // eslint-disable-line react-hooks/exhaustive-deps
+
+  useEffect(() => {
     // ローディング状態を非同期で更新
-    const timer = setTimeout(() => setIsLoading(false), 0);
+    const timer = setTimeout(() => setIsLoading(false), 100);
     return () => clearTimeout(timer);
-  }, [startQuiz]);
+  }, []);
 
   useEffect(() => {
     // クイズが完了したら結果画面に遷移

@@ -1,3 +1,6 @@
+// 五色百人一首の色分け
+export type ColorGroup = 'blue' | 'pink' | 'yellow' | 'green' | 'orange';
+
 export default interface PoemInfo {
     id: number;
     // 歌
@@ -10,4 +13,6 @@ export default interface PoemInfo {
     above: string;
     // 下の句 (ひらがな)
     below: string;
+    // 五色百人一首の色分け
+    color: ColorGroup;
 }

@@ -4,7 +4,7 @@ import { shuffleArray } from './shuffleArray';
 import { QUESTIONS_PER_QUIZ, CHOICES_PER_QUESTION } from './constants';
 
 /**
- * 指定範囲から10首をランダム選択
+ * 指定範囲から20首をランダム選択
  */
 export const selectQuestions = (poems: PoemInfo[], start: number, end: number): PoemInfo[] => {
   const filteredPoems = poems.filter(p => p.id >= start && p.id <= end);
@@ -12,7 +12,7 @@ export const selectQuestions = (poems: PoemInfo[], start: number, end: number): 
 };
 
 /**
- * 指定されたIDリストから10首をランダム選択
+ * 指定されたIDリストから20首をランダム選択
  */
 export const selectQuestionsByIds = (poems: PoemInfo[], selectedIds: number[]): PoemInfo[] => {
   const filteredPoems = poems.filter(p => selectedIds.includes(p.id));

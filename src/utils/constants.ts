@@ -1,8 +1,8 @@
 export const DEFAULT_START_RANGE = 1;
 export const DEFAULT_END_RANGE = 100;
-export const QUESTIONS_PER_QUIZ = 10;
+export const QUESTIONS_PER_QUIZ = 20;
 export const CHOICES_PER_QUESTION = 4;
-export const MIN_RANGE_SIZE = 4; // 4択問題作成のため最低4首必要
+export const MIN_RANGE_SIZE = 20; // 20問のクイズ作成のため最低20首必要
 
 export const STORAGE_KEYS = {
   SETTINGS: 'hyakunin-isshu-settings',

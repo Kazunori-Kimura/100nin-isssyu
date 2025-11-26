@@ -7,36 +7,33 @@ import Button from '../../components/ui/Button';
 import Card from '../../components/ui/Card';
 import Input from '../../components/ui/Input';
 import PoemListSelector from '../../components/PoemListSelector';
-import ColorSelector from '../../components/ColorSelector';
 import { DEFAULT_START_RANGE, DEFAULT_END_RANGE, MIN_RANGE_SIZE } from '../../utils/constants';
-import { SelectionMode } from '../../types/quiz';
-import { ColorGroup } from '../../types/poem';
 import poemData from '../../data/poem.json';
 import PoemInfo from '../../types/poem';
 
 const poems: PoemInfo[] = poemData as PoemInfo[];
 
+type SettingsMode = 'range' | 'individual';
+
 export default function SettingsPage() {
   const router = useRouter();
   const { settings, updateSettings, resetToDefault, getRangeInfo } = useSettings();
   
-  const [mode, setMode] = useState<SelectionMode>(settings.mode);
+  const [mode, setMode] = useState<SettingsMode>(settings.mode === 'color' ? 'range' : settings.mode as SettingsMode);
   const [startRange, setStartRange] = useState(settings.startRange.toString());
   const [endRange, setEndRange] = useState(settings.endRange.toString());
   const [selectedIds, setSelectedIds] = useState<number[]>(settings.selectedIds);
-  const [selectedColors, setSelectedColors] = useState<ColorGroup[]>(settings.selectedColors || []);
-  const [errors, setErrors] = useState({ start: '', end: '', selection: '', colors: '' });
+  const [errors, setErrors] = useState({ start: '', end: '', selection: '' });
 
   useEffect(() => {
-    setMode(settings.mode);
+    setMode(settings.mode === 'color' ? 'range' : settings.mode as SettingsMode);
     setStartRange(settings.startRange.toString());
     setEndRange(settings.endRange.toString());
     setSelectedIds(settings.selectedIds);
-    setSelectedColors(settings.selectedColors || []);
   }, [settings]);
 
   const validateRange = (start: number, end: number) => {
-    const newErrors = { start: '', end: '', selection: '', colors: '' };
+    const newErrors = { start: '', end: '', selection: '' };
 
     if (start < 1 || start > 100) {
       newErrors.start = '開始番号は1-100の間で入力してください';
@@ -56,7 +53,7 @@ export default function SettingsPage() {
   };
 
   const validateSelection = () => {
-    const newErrors = { start: '', end: '', selection: '', colors: '' };
+    const newErrors = { start: '', end: '', selection: '' };
     
     if (selectedIds.length < MIN_RANGE_SIZE) {
       newErrors.selection = `最低${MIN_RANGE_SIZE}首選択してください（4択問題作成のため）`;
@@ -64,20 +61,6 @@ export default function SettingsPage() {
 
     setErrors(newErrors);
     return selectedIds.length >= MIN_RANGE_SIZE;
-  };
-
-  const validateColors = () => {
-    const newErrors = { start: '', end: '', selection: '', colors: '' };
-    const totalCount = selectedColors.length * 20;
-    
-    if (selectedColors.length === 0) {
-      newErrors.colors = '最低1つの色を選択してください';
-    } else if (totalCount < MIN_RANGE_SIZE) {
-      newErrors.colors = `最低${MIN_RANGE_SIZE}首必要です（4択問題作成のため）`;
-    }
-
-    setErrors(newErrors);
-    return selectedColors.length > 0 && totalCount >= MIN_RANGE_SIZE;
   };
 
   const handleSave = () => {
@@ -90,7 +73,6 @@ export default function SettingsPage() {
           start: isNaN(start) ? '有効な数値を入力してください' : '',
           end: isNaN(end) ? '有効な数値を入力してください' : '',
           selection: '',
-          colors: '',
         });
         return;
       }
@@ -102,17 +84,6 @@ export default function SettingsPage() {
           endRange: end,
           selectedIds: [],
           selectedColors: []
-        });
-        router.push('/');
-      }
-    } else if (mode === 'color') {
-      if (validateColors()) {
-        updateSettings({ 
-          mode: 'color',
-          startRange: DEFAULT_START_RANGE,
-          endRange: DEFAULT_END_RANGE,
-          selectedIds: [],
-          selectedColors: selectedColors
         });
         router.push('/');
       }
@@ -130,9 +101,9 @@ export default function SettingsPage() {
     }
   };
 
-  const handleModeChange = (newMode: SelectionMode) => {
+  const handleModeChange = (newMode: SettingsMode) => {
     setMode(newMode);
-    setErrors({ start: '', end: '', selection: '', colors: '' });
+    setErrors({ start: '', end: '', selection: '' });
   };
 
   const handleReset = () => {
@@ -142,8 +113,7 @@ export default function SettingsPage() {
       setStartRange(DEFAULT_START_RANGE.toString());
       setEndRange(DEFAULT_END_RANGE.toString());
       setSelectedIds([]);
-      setSelectedColors([]);
-      setErrors({ start: '', end: '', selection: '', colors: '' });
+      setErrors({ start: '', end: '', selection: '' });
     }
   };
 
@@ -179,7 +149,7 @@ export default function SettingsPage() {
           <div className="space-y-4">
             <h2 className="text-lg font-semibold text-slate-800">出題方法を選択</h2>
             
-            <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
               <button
                 type="button"
                 onClick={() => handleModeChange('range')}
@@ -199,28 +169,6 @@ export default function SettingsPage() {
                 </div>
                 <p className="text-sm text-slate-600">
                   連続する番号の範囲を指定します（例: 1-50番）
-                </p>
-              </button>
-
-              <button
-                type="button"
-                onClick={() => handleModeChange('color')}
-                className={`p-4 rounded-lg border-2 text-left transition-all ${
-                  mode === 'color'
-                    ? 'border-indigo-500 bg-indigo-50'
-                    : 'border-slate-200 bg-white hover:border-slate-300'
-                }`}
-              >
-                <div className="flex items-center gap-2 mb-2">
-                  <div className={`w-4 h-4 rounded-full border-2 ${
-                    mode === 'color' ? 'border-indigo-500 bg-indigo-500' : 'border-slate-300'
-                  }`}>
-                    {mode === 'color' && <div className="w-2 h-2 bg-white rounded-full mx-auto mt-0.5"></div>}
-                  </div>
-                  <span className="font-medium text-slate-800">色分け選択</span>
-                </div>
-                <p className="text-sm text-slate-600">
-                  五色百人一首の色グループで選択します
                 </p>
               </button>
 
@@ -287,22 +235,6 @@ export default function SettingsPage() {
               </div>
             </div>
           </Card>
-        ) : mode === 'color' ? (
-          <Card>
-            <div className="space-y-6">
-              <div className="flex items-center justify-between">
-                <h2 className="text-lg font-semibold text-slate-800">色を選択</h2>
-                {errors.colors && (
-                  <p className="text-sm text-red-600">{errors.colors}</p>
-                )}
-              </div>
-              
-              <ColorSelector
-                selectedColors={selectedColors}
-                onColorsChange={setSelectedColors}
-              />
-            </div>
-          </Card>
         ) : (
           <Card>
             <div className="space-y-6">
@@ -326,17 +258,11 @@ export default function SettingsPage() {
         <div className="bg-amber-50 border border-amber-200 p-4 rounded-md">
           <h4 className="font-medium text-amber-800 mb-2">注意事項</h4>
           <ul className="text-sm text-amber-700 space-y-1">
-            <li>• 4択問題作成のため、最低4首は必要です</li>
+            <li>• 20問のクイズ作成のため、最低20首は必要です</li>
             {mode === 'range' && (
               <>
                 <li>• 1番から100番までの範囲で設定してください</li>
                 <li>• 開始番号は終了番号以下にしてください</li>
-              </>
-            )}
-            {mode === 'color' && (
-              <>
-                <li>• 五色百人一首の色グループごとに選択できます</li>
-                <li>• 各色グループは20首で構成されています</li>
               </>
             )}
             {mode === 'individual' && (

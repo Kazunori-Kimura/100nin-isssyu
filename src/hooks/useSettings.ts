@@ -2,6 +2,7 @@ import { useLocalStorage } from './useLocalStorage';
 import { AppSettings } from '../types/quiz';
 import { ColorGroup } from '../types/poem';
 import { DEFAULT_START_RANGE, DEFAULT_END_RANGE, STORAGE_KEYS } from '../utils/constants';
+import poemsData from '../data/poem.json';
 
 const defaultSettings: AppSettings = {
   mode: 'range',
@@ -24,15 +25,13 @@ export function useSettings() {
   
   // 色グループから歌のIDを取得する関数
   const getIdsFromColors = (colors: ColorGroup[]): number[] => {
-    const colorToIdMap: Record<ColorGroup, number[]> = {
-      blue: Array.from({ length: 20 }, (_, i) => i + 1),      // 1-20
-      pink: Array.from({ length: 20 }, (_, i) => i + 21),     // 21-40
-      yellow: Array.from({ length: 20 }, (_, i) => i + 41),   // 41-60
-      green: Array.from({ length: 20 }, (_, i) => i + 61),    // 61-80
-      orange: Array.from({ length: 20 }, (_, i) => i + 81),   // 81-100
-    };
+    // poem.jsonから実際の色に基づいて歌のIDを取得
+    const ids = poemsData
+      .filter(poem => colors.includes(poem.color as ColorGroup))
+      .map(poem => poem.id)
+      .sort((a, b) => a - b);
     
-    return colors.flatMap(color => colorToIdMap[color]).sort((a, b) => a - b);
+    return ids;
   };
 
   const getRangeInfo = () => {
